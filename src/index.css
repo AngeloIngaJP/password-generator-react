@@ -18,7 +18,7 @@
 }
 
 .container {
-  width: 450px;
+  width: 500px;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
@@ -62,6 +62,12 @@
 .input-box .input-icon.reload {
   right: 13px;
 }
+.input-icon .reload {
+  transition: 1s;
+}
+.input-icon .reload {
+  transform: rotate(360deg);
+}
 .input-icon span {
   height: 100%;
   display: flex;
@@ -80,6 +86,7 @@
   margin-top: 0.75rem;
   border-radius: 25px;
 }
+
 .pass-indicator::before {
   position: absolute;
   content: "";
@@ -87,9 +94,23 @@
   width: 50%;
   border-radius: inherit;
   transition: width 0.3s ease;
-  background-color: #4285f4;
 }
-
+.pass-indicator#weak::before {
+  width: 25%;
+  background: #e64a4a;
+}
+.pass-indicator#medium::before {
+  width: 50%;
+  background: #f1c80b;
+}
+.pass-indicator#strong::before {
+  width: 75%;
+  background: #00a878;
+}
+.pass-indicator#verystrong::before {
+  width: 100%;
+  background: #4285f4;
+}
 .wrapper .pass-length {
   margin: 1.56rem 0 1.25rem;
 }
@@ -102,9 +123,10 @@
   width: 100%;
   height: 5px;
   margin-top: 0.63rem;
-  -webkit-appearance: none;
+  /* -webkit-appearance: none; */
   background: #dfdfdf;
   border-radius: 15px;
+  outline: none;
 }
 
 .pass-settings .options {
