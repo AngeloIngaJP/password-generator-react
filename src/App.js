@@ -5,11 +5,10 @@ import { checkboxs } from "./Checkboxs";
 
 function App() {
   const [lengthSlider, setLengthSlider] = useState(15);
-  const [checked, setChecked] = useState(["lowercase"]);
   const [password, setPassword] = useState("");
-  const [test, setTest] = useState("");
   const [copy, setCopy] = useState(false);
   const ref = useRef(null);
+  const refArray = useRef([]);
 
   const characters = {
     lowercase: "abcdefghijklmnopqrstuvwxyz",
@@ -20,7 +19,6 @@ function App() {
 
   const changeLength = (e) => {
     setLengthSlider(e.target.value);
-    setTest(password);
   };
 
   const copyPassword = () => {
@@ -31,41 +29,20 @@ function App() {
     }, 1500);
   };
 
-  const verifyChecked = (event) => {
-    const isChecked = event.target.checked;
-    const id = event.target.id;
-    let check = [...checked];
-
-    if (isChecked) {
-      /* setChecked([...checked, id]); */
-      check = [...check, id];
-      setChecked(check);
-    } else {
-      /* setChecked(checked.filter((option) => option !== id)); */
-      check = check.filter((option) => option !== id);
-      setChecked(check);
-    }
-
-    console.log(checked);
-    generatePassword();
-  };
-
   const generatePassword = () => {
     let staticPassword = "",
       randomPassword = "",
       excludeDuplicate = false;
 
-    let check = checked;
-    console.log(checked);
-
-    checked.forEach((option) => {
-      console.log(option);
-      if (option !== "exc-duplicate" && option !== "spaces") {
-        setPassword((staticPassword += characters[option]));
-      } else if (option === "spaces") {
-        setPassword((staticPassword = `  ${staticPassword}  `));
-      } else {
-        excludeDuplicate = true;
+    refArray.current?.forEach((option) => {
+      if (option.checked) {
+        if (option.id !== "exc-duplicate" && option.id !== "spaces") {
+          staticPassword += characters[option.id];
+        } else if (option.id === "spaces") {
+          staticPassword = `  ${staticPassword}  `;
+        } else {
+          excludeDuplicate = true;
+        }
       }
     });
 
@@ -81,9 +58,8 @@ function App() {
         randomPassword += randomChar;
       }
     }
-    console.log(randomPassword);
+
     setPassword(randomPassword);
-    setTest(randomPassword);
   };
 
   useEffect(() => {
@@ -107,7 +83,7 @@ function App() {
         <h2>Password Generator</h2>
         <div className="wrapper">
           <div className="input-box">
-            <input type="text" value={test} disabled />
+            <input type="text" value={password} disabled />
             <span className="input-icon">
               <span>
                 {copy ? (
@@ -145,20 +121,21 @@ function App() {
           <div className="pass-settings">
             <label className="title">Password Settings</label>
             <ul className="options">
-              {checkboxs.map((checkbox) => (
+              {checkboxs.map((checkbox, i) => (
                 <li className="option" key={checkbox.id}>
                   <input
+                    ref={(el) => (refArray.current[i] = el)}
                     type="checkbox"
                     id={checkbox.id}
                     defaultChecked={checkbox.id === "lowercase" ? true : false}
-                    onChange={verifyChecked}
+                    onChange={generatePassword}
                   />
                   <label htmlFor={checkbox.id}>{checkbox.description}</label>
                 </li>
               ))}
             </ul>
           </div>
-          <button className="generate-btn" onClick={verifyChecked}>
+          <button className="generate-btn" onClick={generatePassword}>
             Generate Password
           </button>
         </div>
